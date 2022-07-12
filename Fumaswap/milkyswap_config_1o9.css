@@ -1,0 +1,34 @@
+
+.footer_logo{
+  
+  color: #00ccff !important;
+  
+}
+.navbar_logo_text{
+  
+  color: #00ccff !important;
+  font-style: bold;
+  font-size: 20px;
+  
+}
+.navbar_logo{
+  
+    max-height: 40px !important;
+    max-width: 40px !important;
+    
+    
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    
+}
+
+
+nav.jtuYYv,.navbar_logo_text{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+
+

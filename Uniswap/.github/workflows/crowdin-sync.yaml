@@ -1,0 +1,48 @@
+name: Crowdin Download
+
+on:
+  schedule:
+    - cron: '0 * * * *' # every hour we download translations and update the pr from crowdin
+
+  # manual trigger
+  workflow_dispatch:
+
+jobs:
+  download-translations:
+    name: Download translations
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          registry-url: https://registry.npmjs.org
+          cache: 'yarn'
+
+      - uses: actions/cache@v3
+        id: install-cache
+        with:
+          path: node_modules/
+          key: ${{ runner.os }}-install-${{ hashFiles('**/yarn.lock') }}
+
+      - if: steps.install-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --ignore-scripts
+
+      - run: yarn i18n:extract
+
+      - name: Download Crowdin translations
+        uses: crowdin/github-action@1.4.9
+        with:
+          upload_sources: false
+          download_translations: true
+          project_id: 458284
+          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN_SECRET }}
+          source: 'src/locales/en-US.po'
+          translation: 'src/locales/%locale%.po'
+          create_pull_request: false
+          localization_branch_name: main
+          commit_message: "chore(i18n): synchronize translations from crowdin [skip ci]"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
